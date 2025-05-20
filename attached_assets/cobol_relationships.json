@@ -1,0 +1,170 @@
+{
+  "links": [
+    {
+      "description": "REFORMER calls HEX2TEXT",
+      "source": "REFORMER",
+      "target": "HEX2TEXT",
+      "type": "calls",
+      "value": 3
+    },
+    {
+      "description": "MOVEME calls HEX2TEXT",
+      "source": "MOVEME",
+      "target": "HEX2TEXT",
+      "type": "calls",
+      "value": 3
+    }
+  ],
+  "nodes": [
+    {
+      "description": "COBOL Program: COND88\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "COND88",
+      "incoming_calls": 0,
+      "name": "COND88",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: NOTBOOL\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "NOTBOOL",
+      "incoming_calls": 0,
+      "name": "NOTBOOL",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: ATTRACT\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "ATTRACT",
+      "incoming_calls": 0,
+      "name": "ATTRACT",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: HELLO\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "HELLO",
+      "incoming_calls": 0,
+      "name": "HELLO",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: INVCALC\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "INVCALC",
+      "incoming_calls": 0,
+      "name": "INVCALC",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: CPSEQFR\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "CPSEQFR",
+      "incoming_calls": 0,
+      "name": "CPSEQFR",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: STRINGIT\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "STRINGIT",
+      "incoming_calls": 0,
+      "name": "STRINGIT",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: COND88\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "COND88",
+      "incoming_calls": 0,
+      "name": "COND88",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: REFORMER\nCalls to other programs: 1\nCalled by other programs: 0",
+      "id": "REFORMER",
+      "incoming_calls": 0,
+      "name": "REFORMER",
+      "outgoing_calls": 1,
+      "status": "analyzed",
+      "type": "program",
+      "value": 11
+    },
+    {
+      "description": "COBOL Program: MOVEME\nCalls to other programs: 1\nCalled by other programs: 0",
+      "id": "MOVEME",
+      "incoming_calls": 0,
+      "name": "MOVEME",
+      "outgoing_calls": 1,
+      "status": "analyzed",
+      "type": "program",
+      "value": 11
+    },
+    {
+      "description": "COBOL Program: BRAKES\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "BRAKES",
+      "incoming_calls": 0,
+      "name": "BRAKES",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: HEX2TEXT\nCalls to other programs: 0\nCalled by other programs: 2",
+      "id": "HEX2TEXT",
+      "incoming_calls": 2,
+      "name": "HEX2TEXT",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 12
+    },
+    {
+      "description": "COBOL Program: CPSEQVR\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "CPSEQVR",
+      "incoming_calls": 0,
+      "name": "CPSEQVR",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: DATE2\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "DATE2",
+      "incoming_calls": 0,
+      "name": "DATE2",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    },
+    {
+      "description": "COBOL Program: DATE1\nCalls to other programs: 0\nCalled by other programs: 0",
+      "id": "DATE1",
+      "incoming_calls": 0,
+      "name": "DATE1",
+      "outgoing_calls": 0,
+      "status": "analyzed",
+      "type": "program",
+      "value": 10
+    }
+  ]
+}

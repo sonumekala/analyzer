@@ -1,0 +1,478 @@
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { aiConfigSchema, type AIConfig, type AnalysisReport } from "@shared/schema";
+import { getAnalysisHistory, getOrCreateAnalysis, analyzeProjectRelationships } from "@/lib/cobol-service";
+import Header from "@/components/header";
+import FileUpload from "@/components/file-upload";
+import DirectoryUpload from "@/components/directory-upload";
+import FileList from "@/components/file-list";
+import CodeViewer from "@/components/code-viewer";
+import AnalysisSummary from "@/components/analysis-summary";
+import EntityDetails from "@/components/entity-details";
+import PotentialIssues from "@/components/potential-issues";
+import RelationshipChart from "@/components/relationship-chart";
+import AnalysisSidebar from "@/components/analysis-sidebar";
+import ProjectAnalysis from "@/components/project-analysis";
+import CombinedAnalysisView from "@/components/combined-analysis-view";
+import { Button } from "@/components/ui/button";
+import { Upload, LightbulbIcon, Network, ChevronLeft, ChevronRight, Settings, Folder, File, Layers } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+export default function Dashboard() {
+  const { toast } = useToast();
+  const [selectedFileId, setSelectedFileId] = useState<number | undefined>(undefined);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isProjectAnalyzing, setIsProjectAnalyzing] = useState(false);
+  const [projectAnalysis, setProjectAnalysis] = useState<AnalysisReport | undefined>(undefined);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [selectedAnalysisMode, setSelectedAnalysisMode] = useState<'individual' | 'project'>('individual');
+  const [aiConfig, setAIConfig] = useState<AIConfig>(aiConfigSchema.parse({
+    modelTemperature: 0.7,
+    contextWindow: 4096,
+    detailLevel: "Standard",
+    modelName: "llama3-8b"
+  }));
+  
+  // Fetch analysis history for selected file
+  const { 
+    data: analysisHistory = [],
+    refetch: refetchAnalysisHistory
+  } = useQuery({
+    queryKey: [`/api/files/${selectedFileId}/analysis`],
+    queryFn: async () => {
+      if (!selectedFileId) return [];
+      return getAnalysisHistory(selectedFileId);
+    },
+    enabled: !!selectedFileId
+  });
+  
+  // Get or create analysis for selected file
+  const { 
+    data: analysis,
+    isLoading: isAnalysisLoading,
+    refetch: refetchAnalysis
+  } = useQuery<AnalysisReport | undefined>({
+    queryKey: [`/api/files/${selectedFileId}/analysis`, aiConfig],
+    queryFn: async () => {
+      if (!selectedFileId) return undefined;
+      return getOrCreateAnalysis(selectedFileId, aiConfig);
+    },
+    enabled: !!selectedFileId
+  });
+  
+  // Handle running a new analysis
+  const handleRunAnalysis = async () => {
+    if (!selectedFileId) {
+      toast({
+        title: "No file selected",
+        description: "Please select a file to analyze",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      setIsAnalyzing(true);
+      await refetchAnalysis();
+      await refetchAnalysisHistory();
+      
+      toast({
+        title: "Analysis complete",
+        description: "The file has been analyzed successfully"
+      });
+    } catch (error) {
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+  
+  // Update AI config
+  const handleConfigChange = (newConfig: Partial<AIConfig>) => {
+    setAIConfig((prev) => ({ ...prev, ...newConfig }));
+  };
+  
+  // Get analysis metadata for sidebar
+  const analysisMetadata = analysis ? {
+    modelUsed: aiConfig.modelName,
+    processingTime: (analysis as AnalysisReport).processingTime,
+    tokensUsed: (analysis as AnalysisReport).tokensUsed,
+  } : undefined;
+  
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Header />
+      
+      <div className="flex flex-1 overflow-hidden">
+        {/* Collapsible Settings Sidebar */}
+        <aside className={`${isSidebarCollapsed ? 'w-12' : 'w-64'} flex-shrink-0 border-r border-border bg-card flex flex-col transition-all duration-300 ease-in-out relative`}>
+          {/* Collapse toggle button */}
+          <button 
+            className="absolute -right-3 top-4 bg-background border border-border rounded-full p-1 shadow-sm z-10"
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          >
+            {isSidebarCollapsed ? 
+              <ChevronRight className="h-4 w-4 text-muted-foreground" /> : 
+              <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+            }
+          </button>
+
+          {isSidebarCollapsed ? (
+            // Collapsed sidebar content
+            <div className="flex flex-col items-center py-4 space-y-6">
+              <Settings className="h-6 w-6 text-primary" />
+              <div className="h-[1px] w-8 bg-border" />
+              <button 
+                className={`p-2 rounded-md ${selectedAnalysisMode === 'individual' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}
+                onClick={() => setSelectedAnalysisMode('individual')}
+                title="Individual Program Analysis"
+              >
+                <File className="h-5 w-5" />
+              </button>
+              <button 
+                className={`p-2 rounded-md ${selectedAnalysisMode === 'project' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}
+                onClick={() => setSelectedAnalysisMode('project')}
+                title="Project-Wide Analysis"
+              >
+                <Folder className="h-5 w-5" />
+              </button>
+            </div>
+          ) : (
+            // Expanded sidebar content
+            <ScrollArea className="flex-1">
+              <div className="p-4 border-b border-border">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Settings className="h-5 w-5 text-primary" />
+                  <h2 className="text-sm font-semibold">Analysis Settings</h2>
+                </div>
+                
+                {/* AI Model Settings */}
+                <div className="mb-4">
+                  <h3 className="text-xs font-bold text-muted-foreground mb-1">AI MODEL</h3>
+                  <div className="relative">
+                    <select 
+                      className="block w-full py-1.5 pl-3 pr-10 text-sm border border-neutral-300 rounded-md"
+                      value={aiConfig.modelName}
+                      onChange={(e) => handleConfigChange({ modelName: e.target.value })}
+                      disabled={isAnalyzing}
+                    >
+                      <option value="llama3-8b">Llama 3 (8B parameters)</option>
+                      <option value="mistral-7b">Mistral 7B</option>
+                      <option value="codellama-13b">CodeLlama 13B</option>
+                    </select>
+                  </div>
+                </div>
+                
+                {/* Temperature Setting */}
+                <div className="mb-4">
+                  <h3 className="text-xs font-bold text-muted-foreground mb-1">TEMPERATURE</h3>
+                  <div className="flex items-center">
+                    <span className="text-xs text-muted-foreground mr-2">0.0</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={aiConfig.modelTemperature}
+                      onChange={(e) => handleConfigChange({ modelTemperature: parseFloat(e.target.value) })}
+                      className="flex-1 accent-primary"
+                    />
+                    <span className="text-xs text-muted-foreground ml-2">1.0</span>
+                  </div>
+                  <div className="text-xs text-right mt-1 text-muted-foreground">
+                    {aiConfig.modelTemperature} - {aiConfig.modelTemperature < 0.3 ? "More Focused" : aiConfig.modelTemperature > 0.7 ? "More Creative" : "Balanced"}
+                  </div>
+                </div>
+                
+                {/* Detail Level Setting */}
+                <div className="mb-4">
+                  <h3 className="text-xs font-bold text-muted-foreground mb-1">DETAIL LEVEL</h3>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      className={`text-xs py-1 rounded-md ${aiConfig.detailLevel === 'Basic' ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-muted text-muted-foreground border border-border'}`}
+                      onClick={() => handleConfigChange({ detailLevel: 'Basic' })}
+                    >
+                      Basic
+                    </button>
+                    <button
+                      className={`text-xs py-1 rounded-md ${aiConfig.detailLevel === 'Standard' ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-muted text-muted-foreground border border-border'}`}
+                      onClick={() => handleConfigChange({ detailLevel: 'Standard' })}
+                    >
+                      Standard
+                    </button>
+                    <button
+                      className={`text-xs py-1 rounded-md ${aiConfig.detailLevel === 'Detailed' ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-muted text-muted-foreground border border-border'}`}
+                      onClick={() => handleConfigChange({ detailLevel: 'Detailed' })}
+                    >
+                      Full
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Analysis Mode Selection */}
+                <div className="mb-4">
+                  <h3 className="text-xs font-bold text-muted-foreground mb-1">ANALYSIS MODE</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      className={`flex flex-col items-center text-xs p-2 rounded-md ${
+                        selectedAnalysisMode === 'individual' ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-muted text-muted-foreground border border-border'
+                      }`}
+                      onClick={() => setSelectedAnalysisMode('individual')}
+                    >
+                      <File className="h-5 w-5 mb-1" />
+                      Individual
+                    </button>
+                    <button
+                      className={`flex flex-col items-center text-xs p-2 rounded-md ${
+                        selectedAnalysisMode === 'project' ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-muted text-muted-foreground border border-border'
+                      }`}
+                      onClick={() => setSelectedAnalysisMode('project')}
+                    >
+                      <Folder className="h-5 w-5 mb-1" />
+                      Project
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="mt-4 space-y-2">
+                  <Button 
+                    className="w-full justify-center"
+                    onClick={selectedAnalysisMode === 'individual' ? handleRunAnalysis : () => {
+                      // Trigger project analysis
+                      if (projectAnalysis) {
+                        setProjectAnalysis(undefined);
+                      }
+                      setIsProjectAnalyzing(true);
+                    }}
+                    disabled={(selectedAnalysisMode === 'individual' && (!selectedFileId || isAnalyzing)) || isProjectAnalyzing}
+                  >
+                    <LightbulbIcon className="h-4 w-4 mr-2" />
+                    {isAnalyzing || isProjectAnalyzing ? "Analyzing..." : "Run Analysis"}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="w-full justify-center"
+                    onClick={() => {
+                      if (selectedAnalysisMode === 'individual') {
+                        setSelectedFileId(undefined);
+                      } else {
+                        setProjectAnalysis(undefined);
+                      }
+                    }}
+                  >
+                    Clear Results
+                  </Button>
+                </div>
+              </div>
+            </ScrollArea>
+          )}
+        </aside>
+        
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {/* Fixed Tab Navigation for Analysis Modes */}
+          <div className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-30 px-6 py-3">
+            <Tabs
+              defaultValue={selectedAnalysisMode}
+              value={selectedAnalysisMode}
+              onValueChange={(value) => setSelectedAnalysisMode(value as 'individual' | 'project')}
+              className="w-full"
+            >
+              <div className="flex justify-between items-center">
+                <TabsList className="shadow-sm">
+                  <TabsTrigger value="individual" className="flex items-center gap-2">
+                    <File className="h-4 w-4" />
+                    Individual Program Analysis
+                  </TabsTrigger>
+                  <TabsTrigger value="project" className="flex items-center gap-2">
+                    <Layers className="h-4 w-4" />
+                    Project-Wide Analysis
+                  </TabsTrigger>
+                </TabsList>
+                
+                {selectedAnalysisMode === 'individual' && selectedFileId ? (
+                  <Button
+                    onClick={handleRunAnalysis}
+                    disabled={isAnalyzing}
+                    className="gap-2"
+                  >
+                    <LightbulbIcon className="h-4 w-4" />
+                    {isAnalyzing ? "Analyzing..." : "Run Analysis"}
+                  </Button>
+                ) : selectedAnalysisMode === 'project' ? (
+                  <ProjectAnalysis 
+                    onProjectAnalysisStarted={() => setIsProjectAnalyzing(true)}
+                    onProjectAnalysisComplete={(analysis) => {
+                      setProjectAnalysis(analysis);
+                      setIsProjectAnalyzing(false);
+                    }}
+                    aiConfig={aiConfig}
+                  />
+                ) : null}
+              </div>
+            </Tabs>
+          </div>
+          
+          {/* Scrollable Content Area */}
+          <div className="flex-1 overflow-auto p-6 scrollbar-thin">
+            <Tabs
+              defaultValue={selectedAnalysisMode}
+              value={selectedAnalysisMode}
+              className="w-full"
+            >
+
+              {/* Individual Program Analysis Content */}
+              <TabsContent value="individual" className="space-y-6 mt-4">
+                {selectedFileId ? (
+                  <>
+                    {/* Entity Relationships Graph (at the top) - Individual View */}
+                    <div className="mb-6">
+                      <RelationshipChart 
+                        analysis={analysis as AnalysisReport} 
+                        isLoading={isAnalysisLoading || isAnalyzing} 
+                      />
+                    </div>
+
+                    {/* Analysis Summary */}
+                    <AnalysisSummary 
+                      analysis={analysis as AnalysisReport} 
+                      isLoading={isAnalysisLoading || isAnalyzing} 
+                    />
+                    
+                    {/* Entities and Issues */}
+                    <div className="grid grid-cols-12 gap-6 my-6">
+                      <div className="col-span-6">
+                        <EntityDetails 
+                          analysis={analysis as AnalysisReport} 
+                          isLoading={isAnalysisLoading || isAnalyzing} 
+                        />
+                      </div>
+                      <div className="col-span-6">
+                        <PotentialIssues 
+                          analysis={analysis as AnalysisReport} 
+                          isLoading={isAnalysisLoading || isAnalyzing} 
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Source Code Viewer */}
+                    <div className="mb-6">
+                      <CodeViewer fileId={selectedFileId} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-card border border-border rounded-lg p-8 text-center">
+                    <div className="flex flex-col items-center max-w-lg mx-auto">
+                      <File className="h-16 w-16 text-primary/20 mb-4" />
+                      <h2 className="text-2xl font-bold mb-2">Upload a COBOL File</h2>
+                      <p className="text-muted-foreground mb-6">
+                        Upload a single COBOL file to analyze its structure, entities, relationships, and potential issues.
+                      </p>
+                      <FileUpload 
+                        variant="full"
+                        onUploadSuccess={(fileId) => {
+                          if (fileId) {
+                            setSelectedFileId(fileId);
+                            refetchAnalysisHistory();
+                          }
+                        }} 
+                      />
+                      <div className="w-full mt-6">
+                        <h3 className="text-sm font-semibold text-left mb-2">Existing Files</h3>
+                        <div className="border border-border rounded-md">
+                          <FileList 
+                            selectedFileId={selectedFileId} 
+                            onSelectFile={(id) => setSelectedFileId(id)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Project-wide Analysis Content */}
+              <TabsContent value="project" className="space-y-6 mt-4">
+                {projectAnalysis ? (
+                  <>
+                    {/* Project-wide entity relationships graph */}
+                    <div className="mb-6">
+                      <CombinedAnalysisView 
+                        selectedFileId={selectedFileId}
+                        individualAnalysis={analysis as AnalysisReport}
+                        projectAnalysis={projectAnalysis}
+                        isIndividualLoading={isAnalysisLoading || isAnalyzing}
+                        isProjectLoading={isProjectAnalyzing}
+                      />
+                    </div>
+                    
+                    {/* Project-wide analysis summary */}
+                    <AnalysisSummary 
+                      analysis={projectAnalysis} 
+                      isLoading={isProjectAnalyzing} 
+                    />
+                    
+                    {/* Project-wide issues and entity details */}
+                    <div className="grid grid-cols-12 gap-6 my-6">
+                      <div className="col-span-6">
+                        <EntityDetails 
+                          analysis={projectAnalysis}
+                          isLoading={isProjectAnalyzing} 
+                        />
+                      </div>
+                      <div className="col-span-6">
+                        <PotentialIssues 
+                          analysis={projectAnalysis}
+                          isLoading={isProjectAnalyzing} 
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-card border border-border rounded-lg p-8 text-center">
+                    <div className="flex flex-col items-center max-w-lg mx-auto">
+                      <Folder className="h-16 w-16 text-primary/20 mb-4" />
+                      <h2 className="text-2xl font-bold mb-2">Upload COBOL Project Directory</h2>
+                      <p className="text-muted-foreground mb-6">
+                        Upload multiple COBOL files at once to analyze cross-program dependencies and relationships within a project.
+                      </p>
+                      <DirectoryUpload 
+                        variant="full"
+                        onUploadSuccess={() => {
+                          toast({
+                            title: "Directory Uploaded",
+                            description: "Your COBOL files have been uploaded. Run the project analysis to see cross-program relationships."
+                          });
+                        }} 
+                      />
+                      
+                      <div className="mt-8 w-full">
+                        <Button 
+                          className="w-full"
+                          onClick={() => {
+                            setIsProjectAnalyzing(true);
+                          }}
+                          disabled={isProjectAnalyzing}
+                        >
+                          <Network className="h-4 w-4 mr-2" />
+                          {isProjectAnalyzing ? "Analyzing Project..." : "Analyze Project Relationships"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

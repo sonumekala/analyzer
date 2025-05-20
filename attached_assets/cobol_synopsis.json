@@ -1,0 +1,133 @@
+{
+  "analysis": {
+    "created_at": "2025-04-04T04:26:09.772664",
+    "file_count": 15,
+    "id": 15,
+    "name": "COBOL Analysis 2025-04-04 04:25",
+    "session_id": "bb7ef7fb-508b-4f78-a05a-e054d59dd89c",
+    "synopsis": "<h3 class='mt-4'>COBOL Project Synopsis</h3>\n<h4 class='mt-3'>Overview\nThis COBOL project consists of 15 program(s) that work together to form an application. Based on the structure and components, this appears to be a large enterprise application.</h4>\n<h4 class='mt-3'>Key Programs\nThe following COBOL programs were analyzed:\n- NOTBOOL (Complexity: Medium)\n- CPSEQFR (Complexity: Medium)\n- COND88 (Complexity: Medium)\n- INVCALC (Complexity: Medium)\n- COND88 (Complexity: Medium)\n- ATTRACT (Complexity: Low)\n- CPSEQVR (Complexity: Low)\n- MOVEME (Complexity: Low)\n- REFORMER (Complexity: Low)\n- HEX2TEXT (Complexity: Low)\n- BRAKES (Complexity: Low)\n- HELLO (Complexity: Low)\n- STRINGIT (Complexity: Low)\n- DATE2 (Complexity: Low)\n- DATE1 (Complexity: Low)</h4>\n<h4 class='mt-3'>Project Structure\n- Total Programs: 15\n- Total Paragraphs: 26\n- Total Copybooks: 0\n- Total External Calls: 1\n- Database Operations: 0\n- File I/O Operations: 18</h4>\n<h4 class='mt-3'>Program Relationships\nThe analysis shows relationships between various components including program calls, copybook inclusions, and data definitions.</h4>\n<h4 class='mt-3'>Relationship Analysis</h4>\n<h5 class='mt-3'>PROCEDURE Relationships\n- COND88 → GOBACK\n- NOTBOOL → GOBACK\n- ATTRACT → goback\n- ATTRACT → ComputeAttraction\n- ATTRACT → VerifyAttributesOfBody\n- ATTRACT → SolicitAttributesOfBody</h5>\n<h5 class='mt-3'>DATA Relationships\n- COND88 → THE-ANSWER\n- COND88 → PERSON-AGE\n- COND88 → FILLER\n- COND88 → CATEGORY-CODE\n- NOTBOOL → EX7-FALSE\n- NOTBOOL → EX2-FLAG\n- NOTBOOL → THE-ANSWER\n- NOTBOOL → EX3-YES-VALUE\n- NOTBOOL → EX5-FIELD\n- NOTBOOL → FILLER\n- NOTBOOL → EX7-TRUE\n- NOTBOOL → EX4-TRUE-VALUE\n- NOTBOOL → EX3-FLAG\n- NOTBOOL → EX4-FALSE-VALUE\n- ATTRACT → VelocityText\n- ATTRACT → VelocityOrPosition\n- ATTRACT → ContinueReply\n- ATTRACT → PositionText\n- ATTRACT → GoodbyeDisplay\n- ATTRACT → filler\n- ATTRACT → ForceDisplay\n- ATTRACT → ForceAxis\n- ATTRACT → BodyNumber\n- ATTRACT → DistanceIsZeroDisplay</h5>\n<h5 class='mt-3'>Code Similarity Relationships\n- COND88.CBL → NOTBOOL.CBL\n- HELLO.CBL → STRINGIT.CBL\n- HELLO.CBL → REFORMER.CBL\n- HELLO.CBL → MOVEME.CBL\n- INVCALC.CBL → REFORMER.CBL\n- CPSEQFR.CBL → CPSEQVR.CBL\n- STRINGIT.CBL → REFORMER.CBL\n- STRINGIT.CBL → MOVEME.CBL\n- REFORMER.CBL → MOVEME.CBL\n- REFORMER.CBL → DATE2.CBL\n- REFORMER.CBL → DATE1.CBL\n- DATE2.CBL → DATE1.CBL</h5>\n<h4 class='mt-3'>Detailed Analysis of Key Programs</h4>\n<h5 class='mt-3'>NOTBOOL\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 1\n- Database Operations: 0\n- File Operations: 0\n- Conditional Logic Structures: 20</h5>\n<h5 class='mt-3'>CPSEQFR\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 3\n- Database Operations: 0\n- File Operations: 10\n- Conditional Logic Structures: 5</h5>\n<h5 class='mt-3'>COND88\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 1\n- Database Operations: 0\n- File Operations: 0\n- Conditional Logic Structures: 18</h5>\n<h4 class='mt-3'>Technical Assessment\nThe codebase demonstrates high complexity with multiple program interactions.</h4>\n<h4 class='mt-3'>Analysis Date\nThis analysis was generated on 2025-04-04 04:26:09.</h4>\n"
+  },
+  "programs": [
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 155,
+      "name": "COND88",
+      "program_id": "COND88.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 156,
+      "name": "NOTBOOL",
+      "program_id": "NOTBOOL.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 157,
+      "name": "ATTRACT",
+      "program_id": "ATTRACT.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 158,
+      "name": "HELLO",
+      "program_id": "HELLO.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 159,
+      "name": "INVCALC",
+      "program_id": "INVCALC.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 160,
+      "name": "CPSEQFR",
+      "program_id": "CPSEQFR.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 161,
+      "name": "STRINGIT",
+      "program_id": "STRINGIT.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 162,
+      "name": "COND88",
+      "program_id": "IFEVAL.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 163,
+      "name": "REFORMER",
+      "program_id": "REFORMER.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 164,
+      "name": "MOVEME",
+      "program_id": "MOVEME.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 165,
+      "name": "BRAKES",
+      "program_id": "BRAKES.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 166,
+      "name": "HEX2TEXT",
+      "program_id": "HEX2TEXT.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 167,
+      "name": "CPSEQVR",
+      "program_id": "CPSEQVR.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 168,
+      "name": "DATE2",
+      "program_id": "DATE2.CBL"
+    },
+    {
+      "analysis_id": 15,
+      "description": "",
+      "file_path": "",
+      "id": 169,
+      "name": "DATE1",
+      "program_id": "DATE1.CBL"
+    }
+  ],
+  "synopsis": "<h3 class='mt-4'>COBOL Project Synopsis</h3>\n<h4 class='mt-3'>Overview\nThis COBOL project consists of 15 program(s) that work together to form an application. Based on the structure and components, this appears to be a large enterprise application.</h4>\n<h4 class='mt-3'>Key Programs\nThe following COBOL programs were analyzed:\n- NOTBOOL (Complexity: Medium)\n- CPSEQFR (Complexity: Medium)\n- COND88 (Complexity: Medium)\n- INVCALC (Complexity: Medium)\n- COND88 (Complexity: Medium)\n- ATTRACT (Complexity: Low)\n- CPSEQVR (Complexity: Low)\n- MOVEME (Complexity: Low)\n- REFORMER (Complexity: Low)\n- HEX2TEXT (Complexity: Low)\n- BRAKES (Complexity: Low)\n- HELLO (Complexity: Low)\n- STRINGIT (Complexity: Low)\n- DATE2 (Complexity: Low)\n- DATE1 (Complexity: Low)</h4>\n<h4 class='mt-3'>Project Structure\n- Total Programs: 15\n- Total Paragraphs: 26\n- Total Copybooks: 0\n- Total External Calls: 1\n- Database Operations: 0\n- File I/O Operations: 18</h4>\n<h4 class='mt-3'>Program Relationships\nThe analysis shows relationships between various components including program calls, copybook inclusions, and data definitions.</h4>\n<h4 class='mt-3'>Relationship Analysis</h4>\n<h5 class='mt-3'>PROCEDURE Relationships\n- COND88 → GOBACK\n- NOTBOOL → GOBACK\n- ATTRACT → goback\n- ATTRACT → ComputeAttraction\n- ATTRACT → VerifyAttributesOfBody\n- ATTRACT → SolicitAttributesOfBody</h5>\n<h5 class='mt-3'>DATA Relationships\n- COND88 → THE-ANSWER\n- COND88 → PERSON-AGE\n- COND88 → FILLER\n- COND88 → CATEGORY-CODE\n- NOTBOOL → EX7-FALSE\n- NOTBOOL → EX2-FLAG\n- NOTBOOL → THE-ANSWER\n- NOTBOOL → EX3-YES-VALUE\n- NOTBOOL → EX5-FIELD\n- NOTBOOL → FILLER\n- NOTBOOL → EX7-TRUE\n- NOTBOOL → EX4-TRUE-VALUE\n- NOTBOOL → EX3-FLAG\n- NOTBOOL → EX4-FALSE-VALUE\n- ATTRACT → VelocityText\n- ATTRACT → VelocityOrPosition\n- ATTRACT → ContinueReply\n- ATTRACT → PositionText\n- ATTRACT → GoodbyeDisplay\n- ATTRACT → filler\n- ATTRACT → ForceDisplay\n- ATTRACT → ForceAxis\n- ATTRACT → BodyNumber\n- ATTRACT → DistanceIsZeroDisplay</h5>\n<h5 class='mt-3'>Code Similarity Relationships\n- COND88.CBL → NOTBOOL.CBL\n- HELLO.CBL → STRINGIT.CBL\n- HELLO.CBL → REFORMER.CBL\n- HELLO.CBL → MOVEME.CBL\n- INVCALC.CBL → REFORMER.CBL\n- CPSEQFR.CBL → CPSEQVR.CBL\n- STRINGIT.CBL → REFORMER.CBL\n- STRINGIT.CBL → MOVEME.CBL\n- REFORMER.CBL → MOVEME.CBL\n- REFORMER.CBL → DATE2.CBL\n- REFORMER.CBL → DATE1.CBL\n- DATE2.CBL → DATE1.CBL</h5>\n<h4 class='mt-3'>Detailed Analysis of Key Programs</h4>\n<h5 class='mt-3'>NOTBOOL\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 1\n- Database Operations: 0\n- File Operations: 0\n- Conditional Logic Structures: 20</h5>\n<h5 class='mt-3'>CPSEQFR\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 3\n- Database Operations: 0\n- File Operations: 10\n- Conditional Logic Structures: 5</h5>\n<h5 class='mt-3'>COND88\n- Author: Unknown\n- Date Written: Unknown date\n- Complexity Level: Medium\n- Paragraphs: 1\n- Database Operations: 0\n- File Operations: 0\n- Conditional Logic Structures: 18</h5>\n<h4 class='mt-3'>Technical Assessment\nThe codebase demonstrates high complexity with multiple program interactions.</h4>\n<h4 class='mt-3'>Analysis Date\nThis analysis was generated on 2025-04-04 04:26:09.</h4>\n"
+}
